@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>journal templates</title>
+		<style>
+			body {
+				background: #eee;
+				box-sizing: border-box;
+			}
+			article {
+				margin: 50px auto;
+				box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+				background: white;
+				box-sizing: border-box;
+				padding: 36px;
+				overflow: hidden;
+			}
+			.imageArea {
+				height: 50%;
+			}
+			.writingArea {
+				height: 100%;
+			}
+			.page1 .writingArea {
+				height: 50%;
+			}
+			.line{
+				box-sizing: border-box;
+				border-top: 1px solid #aaf;
+			}
+			.xheight {
+				border-bottom: 1px dashed #ccf;
+				display: block;
+				height: 30%;
+			}
+			.baseline {
+				border-bottom: 1px solid #faa;
+				display: block;
+				height: 30%;
+			}
+
+			.wideRule .line{
+				border-top: 1px solid #aaf;
+			}
+			.wideRule .xheight {
+				border-bottom: 1px dashed #ccf;
+			}
+			.wideRule .baseline {
+				border-bottom: 1px solid #aaf;
+			}
+
+			.collegeRule .line{
+				border-top: 1px solid #aaa;
+			}
+			.collegeRule .xheight {
+				border-bottom: 1px dashed #ccc;
+			}
+			.collegeRule .baseline {
+				border-bottom: 1px solid #aaa;
+			}
+
+
+
+		@media print {
+			body,html {
+				background: white;
+				margin: 0;
+				padding: 0;
+			}
+			select {
+				display: none;
+			}
+			article {
+				box-shadow: none;
+				margin: 0;
+			}
+			script {
+				display: none;
+			}
+		}
+		</style>
+	</head>
+	<body>
+		<select class="selectRule">
+			<option value="starter">Starter</option>
+			<option value="wideRule">Wide Rule</option>
+			<option value="collegeRule">College Rule</option>
+		</select>
+		<article class="page1">
+			<section class="imageArea"></section>
+			<section class="writingArea"></section>
+		</article>
+		<article class="page2">
+			<section class="writingArea"></section>
+		</article>
+		<script>
+			var res = 96,
+				w = res * 8.5,
+				h = res * 11,
+				margin = 0.5,
+				wa1 = document.querySelector("article.page1 section.writingArea"),
+				wa2 = document.querySelector("article.page2 section.writingArea"),
+				body = document.body,
+				selectRule = body.querySelector("select.selectRule"),
+				defaultLineHeight =  100,
+				lineHeight = defaultLineHeight,
+				handleLines = function () {
+					var lines = Math.floor((h-(margin*2))/lineHeight);
+    				wa1.innerHTML = "";
+    				wa2.innerHTML = "";
+    				var i = lines - 1,
+    					i2 = Math.floor(lines/2);
+    				while (i--) {
+    					var line;
+    					if(i<i2){
+    						line = document.createElement('div');
+    						line.classList.add('line');
+    						line.innerHTML = '<span class="xheight"></span><span class="baseline"></span>';
+    						line.style.height = lineHeight + 'px';
+    						wa1.appendChild(line);
+	    				}
+
+    					line = document.createElement('div');
+						line.classList.add('line');
+						line.innerHTML = '<span class="xheight"></span><span class="baseline"></span>';
+						line.style.height = lineHeight + 'px';
+						wa2.appendChild(line);
+
+					}
+				},
+				handleClass = function(e){
+					body.setAttribute('class', '');
+					body.classList.add(this.value);
+					switch (this.value) {
+					    case "starter":
+					    	lineHeight = defaultLineHeight;
+					    	break;
+					    case "wideRule":
+					    	lineHeight = defaultLineHeight * 0.8;
+					    	break;
+					    default: //collegeRuled
+					    	lineHeight = defaultLineHeight * 0.5;
+					    	break;
+					}
+					handleLines();
+				},
+				handlePageSize = function(){
+
+					var articles = document.querySelectorAll("article");
+					var i = articles.length;
+					while(i--){
+						var elem = articles[i];
+						elem.style.height = h + "px";
+						elem.style.width = w + "px";
+					}
+
+					handleLines();
+				};
+
+				selectRule.addEventListener('change', handleClass);
+				handlePageSize();
+		</script>
+	</body>
+</html>
